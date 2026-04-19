@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import React from "react";
 import FoodCard from '../components/common/FoodCard';
 import Modal from '../components/common/Modal';
 import { api } from '../services/api';
