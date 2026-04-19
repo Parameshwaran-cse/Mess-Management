@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState } from 'react'; //changed
 import FoodCard from '../components/common/FoodCard';
 import Modal from '../components/common/Modal';
 
