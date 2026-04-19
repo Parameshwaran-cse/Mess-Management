@@ -1,7 +1,6 @@
-import React from "react";
+import { useState } from 'react';
 import FoodCard from '../components/common/FoodCard';
 import Modal from '../components/common/Modal';
-import { api } from '../services/api';
 
 const MEALS = {
   breakfast: {
@@ -25,9 +24,6 @@ function MenuFeedback() {
   const [ratings, setRatings] = useState({});
   const [alternates, setAlternates] = useState({});
   const [modalOpen, setModalOpen] = useState(false);
-  const [modalType, setModalType] = useState('success');
-  const [modalMessage, setModalMessage] = useState('');
-  const [loading, setLoading] = useState(false);
 
   const handleRating = (item, value) => {
     setRatings({ ...ratings, [item]: value });
@@ -37,22 +33,8 @@ function MenuFeedback() {
     setAlternates({ ...alternates, [meal]: value });
   };
 
-  const handleSubmit = async () => {
-    setLoading(true);
-    try {
-      await api.feedback.submit(ratings, alternates);
-      setModalType('success');
-      setModalMessage('Thank you for your valuable feedback. We\'ll work on improving the menu based on your ratings.');
-      setModalOpen(true);
-      setRatings({});
-      setAlternates({});
-    } catch (error) {
-      setModalType('error');
-      setModalMessage(error.message || 'Failed to submit feedback. Please try again.');
-      setModalOpen(true);
-    } finally {
-      setLoading(false);
-    }
+  const handleSubmit = () => {
+    setModalOpen(true);
   };
 
   return (
@@ -61,13 +43,13 @@ function MenuFeedback() {
         <h3>Breakfast</h3>
         <div className="food-cards">
           {MEALS.breakfast.items.map(item => (
-            <FoodCard key={item.id} item={item} onRate={handleRating} rating={ratings[item.name]} />
+            <FoodCard key={item.id} item={item} onRate={handleRating} />
           ))}
         </div>
         <div className="alternate-box">
           <label>Suggest alternate for least-rated breakfast item</label>
-          <select value={alternates.breakfast || ''} onChange={(e) => handleAlternate('breakfast', e.target.value)}>
-            <option value="">Select alternate</option>
+          <select onChange={(e) => handleAlternate('breakfast', e.target.value)}>
+            <option>Select alternate</option>
             {MEALS.breakfast.alternates.map(alt => (
               <option key={alt} value={alt}>{alt}</option>
             ))}
@@ -79,13 +61,13 @@ function MenuFeedback() {
         <h3>Lunch</h3>
         <div className="food-cards">
           {MEALS.lunch.items.map(item => (
-            <FoodCard key={item.id} item={item} onRate={handleRating} rating={ratings[item.name]} />
+            <FoodCard key={item.id} item={item} onRate={handleRating} />
           ))}
         </div>
         <div className="alternate-box">
           <label>Suggest alternate for least-rated lunch item</label>
-          <select value={alternates.lunch || ''} onChange={(e) => handleAlternate('lunch', e.target.value)}>
-            <option value="">Select alternate</option>
+          <select onChange={(e) => handleAlternate('lunch', e.target.value)}>
+            <option>Select alternate</option>
             {MEALS.lunch.alternates.map(alt => (
               <option key={alt} value={alt}>{alt}</option>
             ))}
@@ -97,13 +79,13 @@ function MenuFeedback() {
         <h3>Dinner</h3>
         <div className="food-cards">
           {MEALS.dinner.items.map(item => (
-            <FoodCard key={item.id} item={item} onRate={handleRating} rating={ratings[item.name]} />
+            <FoodCard key={item.id} item={item} onRate={handleRating} />
           ))}
         </div>
         <div className="alternate-box">
           <label>Suggest alternate for least-rated dinner item</label>
-          <select value={alternates.dinner || ''} onChange={(e) => handleAlternate('dinner', e.target.value)}>
-            <option value="">Select alternate</option>
+          <select onChange={(e) => handleAlternate('dinner', e.target.value)}>
+            <option>Select alternate</option>
             {MEALS.dinner.alternates.map(alt => (
               <option key={alt} value={alt}>{alt}</option>
             ))}
@@ -111,16 +93,14 @@ function MenuFeedback() {
         </div>
       </section>
 
-      <button className="btn" onClick={handleSubmit} disabled={loading}>
-        {loading ? 'Submitting...' : 'Submit Feedback'}
-      </button>
+      <button className="btn" onClick={handleSubmit}>Submit Feedback</button>
 
       <Modal 
         isOpen={modalOpen}
         onClose={() => setModalOpen(false)}
-        title={modalType === 'success' ? 'Feedback Submitted!' : 'Error'}
-        message={modalMessage}
-        type={modalType}
+        title="Feedback Submitted!"
+        message="Thank you for your valuable feedback. We'll work on improving the menu based on your ratings."
+        type="success"
       />
     </main>
   );
